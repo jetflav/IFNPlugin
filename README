@@ -1,0 +1,14 @@
+# To Do
+
+- rename as IFNPlugin
+
+- name changes for any_abs, net, modulo_2, as suggested in the enum
+
+- continued work on handling the FlavSummation, to make sure we have a nice interface
+
+- make sure MassFlavRecombiner also gets the relevant arguments?
+
+- integrate that in terms of the modulo_2 handling elsewhere in the code
+  (so that all previous modulo_2 functionality goes into FlavRecombiner?
+  Watch out if that complicates the interface and potentially retain
+  the current modulo_2 arguments)
