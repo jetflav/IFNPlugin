@@ -1,5 +1,5 @@
-#ifndef __FJCONTRIB_FLAVNEUTRALISERPLUGIN_HH__
-#define __FJCONTRIB_FLAVNEUTRALISERPLUGIN_HH__
+#ifndef __FJCONTRIB_IFNPLUGIN_HH__
+#define __FJCONTRIB_IFNPLUGIN_HH__
 
 // #ifdef __FJC_FLAVNEUT_USEFJCORE__
 // #include "fjcore.hh"
@@ -17,10 +17,10 @@ namespace contrib{
 
 /// Plugin that runs a specified jet algorithm in conjunction
 /// with Flavour Neutralisation
-class FlavNeutraliserPlugin : public JetDefinition::Plugin {
+class IFNPlugin : public JetDefinition::Plugin {
 public:
 
- /// Main constructor for a FlavNeutraliserPlugin
+ /// Main constructor for a IFNPlugin
  ///
  /// \param jet_def: the jet definition on which this plugin will be based
  /// \param alpha: the parameter alpha in the uij neutralisation measure
@@ -29,7 +29,7 @@ public:
  /// \param flav_summation: the flavour summation method to be used (should be one of 
  ///        FlavRecombiner::net and FlavRecombiner::modulo_2)
  /// \param use_mass_flav: intended for IRC tests when dealing with large rapidities
- FlavNeutraliserPlugin(
+ IFNPlugin(
     const JetDefinition & jet_def,
     double alpha,                  
     double omega = -1,
@@ -47,7 +47,7 @@ public:
       _recursive(true) 
         {
         if (flav_summation == FlavRecombiner::any_abs) {
-          throw Error("FlavNeutraliserPlugin: FlavRecombiner::any_abs is not supported");
+          throw Error("IFNPlugin: FlavRecombiner::any_abs is not supported");
         }
       }
 
@@ -59,7 +59,7 @@ public:
  /// \param use_mass_flav: only intended for tests
  /// \param pp: in e+e- alg we use (Emax^2/Emin^2)^pp (default = 1)
  /// \param recursive_neutralisation: if true (default), use recursive algo
- FlavNeutraliserPlugin(
+ IFNPlugin(
      JetDefinition jet_def,
      bool modulo_2 = false,
      FlavNeutraliser::measure measure_in = FlavNeutraliser::cosphi_coshy,
@@ -88,7 +88,7 @@ public:
  /// \param use_mass_flav: only intended for tests
  /// \param pp: in e+e- alg we use (Emax^2/Emin^2)^pp (default = 1)
  /// \param recursive_neutralisation: if true (default), use recursive algo
- FlavNeutraliserPlugin(
+ IFNPlugin(
      JetDefinition jet_def,
      double p, double q, double a,
      bool modulo_2 = false,
@@ -137,6 +137,9 @@ private:
 
 } // namespace contrib
 
+// a typedef for backward compatibility
+typedef IFNPlugin FlavNeutraliserPlugin;
+
 FASTJET_END_NAMESPACE
 
-#endif // __FJCONTRIB_FLAVNEUTRALISERPLUGIN_HH__
+#endif // __FJCONTRIB_IFNPLUGIN_HH__

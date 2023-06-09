@@ -1,4 +1,4 @@
-#include "FlavNeutraliserPlugin.hh"
+#include "IFNPlugin.hh"
 #include "FlavNeutraliser.hh"
 
 #ifndef __FJC_FLAVINFO_USEFJCORE__
@@ -17,7 +17,7 @@ using namespace std;
 
 //---------------------------------------------------------------
 
-string FlavNeutraliserPlugin::description () const {
+string IFNPlugin::description () const {
   ostringstream desc;
   desc <<  "Flavour neutraliser plugin based on " << _jet_def.description();
   if (_spherical_algo) {
@@ -71,12 +71,12 @@ string FlavNeutraliserPlugin::description () const {
 
 //---------------------------------------------------------------
 
-void FlavNeutraliserPlugin::run_clustering(ClusterSequence & cs) const {
+void IFNPlugin::run_clustering(ClusterSequence & cs) const {
 
   // take the initial particles from the cs that gets passed to
   // (which is a cs that has not yet undergone any clustering)
   // and cluster them with the jet definition that was used
-  // to construct the FlavNeutraliserPlugin.
+  // to construct the IFNPlugin.
 
   // need to make sure all jets have FlavHistory and that their indices are
   // correct
@@ -118,7 +118,7 @@ void FlavNeutraliserPlugin::run_clustering(ClusterSequence & cs) const {
       }
     } else {
       throw fastjet::Error(
-          "A PseudoJet being clustered with FlavNeutraliserPlugin had neither "
+          "A PseudoJet being clustered with IFNPlugin had neither "
           "FlavInfo nor FlavHistory user_info.");
     }
   }

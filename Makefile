@@ -16,10 +16,10 @@ check_script = ./utils/check.sh
 
 #------------------------------------------------------------------------
 # things that are specific to this contrib
-NAME=FlavNeutraliserPlugin
-SRCS=FlavNeutraliserPlugin.cc FlavNeutraliser.cc FlavInfo.cc
+NAME=IFNPlugin
+SRCS=IFNPlugin.cc FlavNeutraliser.cc FlavInfo.cc
 EXAMPLES=example
-INSTALLED_HEADERS=FlavNeutraliserPlugin.hh FlavNeutraliser.hh FlavInfo.hh MassFlav.hh
+INSTALLED_HEADERS=IFNPlugin.hh FlavNeutraliser.hh FlavInfo.hh MassFlav.hh
 #------------------------------------------------------------------------
 
 CXXFLAGS+= $(shell $(FASTJETCONFIG) --cxxflags)
@@ -77,3 +77,9 @@ install: all
 
 depend:
 	makedepend -Y --   -- $(SRCS) $(EXAMPLES_SRCS)
+# DO NOT DELETE
+
+IFNPlugin.o: IFNPlugin.hh FlavNeutraliser.hh FlavInfo.hh
+FlavNeutraliser.o: FlavInfo.hh MassFlav.hh FlavNeutraliser.hh
+FlavInfo.o: FlavInfo.hh
+example.o: IFNPlugin.hh FlavNeutraliser.hh FlavInfo.hh

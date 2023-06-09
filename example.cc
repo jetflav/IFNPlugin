@@ -30,7 +30,7 @@
 
 #include "fastjet/PseudoJet.hh"
 #include <sstream>
-#include "FlavNeutraliserPlugin.hh" // In external code, this may become fastjet/contrib/FlavNeutraliserPlugin.hh
+#include "IFNPlugin.hh" // In external code, this may become fastjet/contrib/IFNPlugin.hh
 
 using namespace std;
 using namespace fastjet;
@@ -54,7 +54,7 @@ int main(){
     cout << "# read an event with " << event.size() << " particles" << endl;
 
     //----------------------------------------------------------
-    // illustrate how this FlavNeutraliserPlugin contrib works
+    // illustrate how this IFNPlugin contrib works
 
   }
 
