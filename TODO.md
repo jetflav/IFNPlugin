@@ -1,10 +1,12 @@
 # To Do
 
-- rename as IFNPlugin
+## if the code moves to fjcontrib
 
-- name changes for any_abs, net, modulo_2, as suggested in the enum
+- make sure data/... -> ../data/...
+- make check script in Makefile points to fjcontrib one
+- decide what to do about the -std compile flag
 
-- continued work on handling the FlavSummation, to make sure we have a nice interface
+## General things
 
 - make sure MassFlavRecombiner also gets the relevant arguments?
 

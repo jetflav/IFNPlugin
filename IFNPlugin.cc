@@ -19,7 +19,7 @@ using namespace std;
 
 string IFNPlugin::description () const {
   ostringstream desc;
-  desc <<  "Flavour neutraliser plugin based on " << _jet_def.description();
+  desc <<  "Interleaved Flavour Neutralisation (IFN) plugin based on " << _jet_def.description();
   if (_spherical_algo) {
     desc << ", using a spherical neutralisation measure of type ";
     switch (_measure_in) {
@@ -35,35 +35,38 @@ string IFNPlugin::description () const {
     desc << ", with pp = " << _pp;
   } else {
     desc << ", using a ";
+    string nm = " neutralisation measure";
     switch (_measure_in) {
+        case FlavNeutraliser::general:
+          if (_p+_q == 1.0) desc << "standard uij " << nm << " with alpha = " << 2*_p << ", omega = " << _a;
+          else              desc << "general case with p = " << _p << " q = " << _q << " omega = " << _a; 
+          break;
+        // older variants
         case FlavNeutraliser::sinh_delta_R:
-          desc << "sinh_delta_R"; break;
+          desc << "sinh_delta_R" << nm; break;
         case FlavNeutraliser::delta_R:
-          desc << "delta_R"; break;
+          desc << "delta_R" << nm; break;
         case FlavNeutraliser::jade_delta_R:
-          desc << "jade_delta_R"; break;
+          desc << "jade_delta_R" << nm; break;
         case FlavNeutraliser::maxscale_delta_R:
-          desc << "maxscale_delta_R"; break;
+          desc << "maxscale_delta_R" << nm; break;
         case FlavNeutraliser::phi2_coshy:
-          desc << "phi2_coshy"; break;
+          desc << "phi2_coshy" << nm; break;
         case FlavNeutraliser::cosphi_coshy:
-          desc << "cosphi_coshy"; break;
+          desc << "cosphi_coshy" << nm; break;
         case FlavNeutraliser::aktlike_pair_refratio:
-          desc << "aktlike_pair_refratio"; break;
+          desc << "aktlike_pair_refratio" << nm; break;
         case FlavNeutraliser::aktlike_pair_dynrefratio:
-          desc << "aktlike_pair_dynrefratio"; break;
+          desc << "aktlike_pair_dynrefratio" << nm; break;
         case FlavNeutraliser::jade:
-          desc << "jade (without correction factor a)"; break;
+          desc << "jade (without correction factor a)" << nm; break;
         case FlavNeutraliser::jadea2:
-          desc << "jade (with a = 2)"; break;
+          desc << "jade (with a = 2)" << nm; break;
         case FlavNeutraliser::maxscale:
           desc << "maxscale"; break;
-        case FlavNeutraliser::general:
-          desc << "general case with p = " << _p << " q = " << _q << " a = " << _a; break;
         default:
           desc << "UNRECOGNISED";
     }
-    desc << " neutralisation measure";
   }
   desc << " and recursive = " << recursive();
   return desc.str();

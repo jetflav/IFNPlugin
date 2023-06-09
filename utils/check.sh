@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # usage:
-#   ./check.sh <program> <datafile>
+#   ./check.sh <program> <datafile> [args]
 #
 # this script checks if "<program>" exists, runs it using <datafile>
 # as an input, and compares the output with "<program>.ref" (it fails if
 # "<program>.ref" does not exist),
 #
-# Note that <program> is actually run using "./<program> < <datafile>"
+# Note that <program> is actually run using "./<program> [args] < <datafile>"
 
 # check if tput is present before setting colors, just to be on the safe side
 if [ x`which tput` != "x" ]; then
@@ -65,19 +65,22 @@ test -e ./$2 || { echo "ERROR: the datafile $2 cannot be found."; print_status_a
 
 # run the example
 #./$1 < $2 2>/dev/null | grep -v "^#" > $1.tmp_ref
-./$1 < $2 2>$1.tmp_err | grep -v "^#" > $1.tmp_ref
+command=$1
+infile=$2
+shift;shift
+./$command $* < $infile 2>$command.tmp_err | grep -v "^#" > $command.tmp_ref
 
-DIFF=`cat $1.ref | grep -v "^#" | diff $1.tmp_ref -`
+DIFF=`cat $command.ref | grep -v "^#" | diff $command.tmp_ref -`
 if [[ -n $DIFF ]]; then 
-    cat $1.ref | grep -v "^#" | diff $1.tmp_ref - > $1.diff
+    cat $command.ref | grep -v "^#" | diff $command.tmp_ref - > $command.diff
     echo "ERROR: Outputs differ (output, stderr and diff available in "
-    echo "       $1.tmp_ref , $1.tmp_err and $1.diff)"
+    echo "       $command.tmp_ref , $command.tmp_err and $command.diff)"
     echo
-    #rm $1.tmp_ref
-    print_status_and_exit "$1" "Failed (see difference file)"
+    #rm $command.tmp_ref
+    print_status_and_exit "$command" "Failed (see difference file)"
 fi
 
-rm $1.tmp_err
-rm $1.tmp_ref
+rm $command.tmp_err
+rm $command.tmp_ref
 
-print_status_and_exit "$1" "Success"
+print_status_and_exit "$command" "Success"

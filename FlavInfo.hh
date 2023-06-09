@@ -28,6 +28,9 @@ namespace contrib{
 ///
 /// The class also provides a facility to interpret PDG codes
 /// and deduce the corresponding flavour content of the particle.
+///
+/// For jet clustering with IFN algorithms, it is often easier
+/// to use the FlavHistory class, which is given below
 class FlavInfo : public PseudoJet::UserInfoBase {
 
 public:
@@ -47,10 +50,10 @@ public:
   /// apply any abs to all flavours (so any non-zero number becomes 1)
   void apply_any_abs();
 
-
   /// returns the net number of quarks of flavour iflv
   /// (iflv runs from 1=d to 6=top).
   int operator[](int iflv) const {return _flav_content[iflv];}
+
   /// sets the number of objects of flavour iflv (1=d to 6=top) to be n
   void set_flav(int iflv, int n) {_flav_content[iflv] = n; update_flavourless_attribute();}
 
@@ -96,6 +99,7 @@ public:
   /// BEWARE: do not use this to check if the flavours cancel. 
   /// Instead add the flavours and check that the result is flavourless
   bool has_opposite_flavour(const PseudoJet & particle) const;
+  bool has_opposite_flavor(const PseudoJet & particle) const {return has_opposite_flavour(particle);}
 
   /// allows addition of flavour: note that beam, spectator and PDG status are lost
   FlavInfo operator+(const FlavInfo &) const;
@@ -129,25 +133,43 @@ private:
 
 };
 
+//----------------------------------------------------------------------
 /// Class to keep track of flavour history of a given jet
-/// GPS: we'll need to think about what's going on with the 
-/// derivation from FlavInfo -- the underlying question is
-/// whether any of the underlying FlavInfo class is actually
-/// sensible; to get around this, for now, I've just made
-/// it derive from UserInfoBase
-
+///
 class FlavHistory : public PseudoJet::UserInfoBase {
 public:
-  /// Constructor for known initial history step
+  /// Constructor for generic initial history step from a PDG ID code
+  FlavHistory(int initial_flavour_pdg_id) {
+    _flavour_history.push_back(std::make_pair(-1, FlavInfo(initial_flavour_pdg_id)));
+  }
+
+  /// Constructor for generic initial history step from a FlavInfo object
+  FlavHistory(const FlavInfo & initial_flavour) {
+    _flavour_history.push_back(std::make_pair(-1, initial_flavour));
+  }
+
+  /// Constructor for known initial history step from a FlavInfo object
   FlavHistory(const FlavInfo & initial_flavour, 
               const int initial_hist_step) {
     _flavour_history.push_back(std::make_pair(initial_hist_step, initial_flavour));
   }
 
-  /// Constructor for unknown initial history step
-  FlavHistory(const FlavInfo & initial_flavour) {
-    _flavour_history.push_back(std::make_pair(-1, initial_flavour));
-  }
+  /// returns the current flavour of the particle
+  const FlavInfo & current_flavour() const {return _flavour_history.back().second;}
+  /// returns the initial flavour of the particle
+  const FlavInfo & initial_flavour() const {return _flavour_history.front().second;}
+
+  /// Returns the index of the cluster_sequence history step at which this
+  /// jet acquired its current flavour
+  int current_hist_index() const {return _flavour_history.back().first;}
+
+  /// Returns the index of the cluster_sequence history step at which this
+  /// jet was created with its initial flavour
+  int initial_hist_index() const {return _flavour_history.front().first;}
+
+
+
+
 
   /// Apply flavour modulo 2 to all elements of the history
   void apply_modulo_2() {
@@ -178,7 +200,7 @@ public:
   /// Return the flavour history vector
   const std::vector<std::pair<int, FlavInfo>> & history() const {return _flavour_history;}
 
-  /// Return the final flavour element of the history of a PseudoJet
+  /// Return the current (final) flavour element of the history of a PseudoJet
   static const FlavInfo & current_flavour_of(const PseudoJet & particle) {
     if (particle.has_user_info<FlavHistory>()) {
       return particle.user_info<FlavHistory>().history().back().second;
@@ -220,7 +242,7 @@ public:
   }
 
   /// Return the flavour at a given history step
-  const FlavInfo &flavour_at_step(int step) const {
+  const FlavInfo & flavour_at_step(int step) const {
     if (_flavour_history[0].first > step) {
       throw fastjet::Error(
           "A particle without FlavHistory was searched for FlavHistory.");
@@ -238,10 +260,6 @@ public:
     }
   }
 
-  int current_hist_index() const {return _flavour_history.back().first;}
-  int initial_hist_index() const {return _flavour_history.front().first;}
-  const FlavInfo & current_flavour() const {return _flavour_history.back().second;}
-  const FlavInfo & initial_flavour() const {return _flavour_history.front().second;}
 
   /// Reset the _flavour_history such that it has one element whose flavour is the initial
   /// flavour of the jet, and the hist_step is initiated to its initial value.
@@ -251,8 +269,15 @@ public:
     _new_history.push_back(orig_flavour);
     _flavour_history = _new_history;
   }
-
   const std::vector<std::pair<int, FlavInfo>> & history() {return _flavour_history;}
+
+  // US spelling
+  static const FlavInfo & current_flavor_of(const PseudoJet & particle) {return current_flavour_of(particle);}
+  static const FlavInfo & initial_flavor_of(const PseudoJet & particle) {return initial_flavour_of(particle);}  
+  const FlavInfo & flavor_at_step(int step) const {return flavour_at_step(step);}
+  const FlavInfo & current_flavor() const {return current_flavour();}
+  const FlavInfo & initial_flavor() const {return initial_flavour();}
+
 
  private:
   std::vector<std::pair<int, FlavInfo>> _flavour_history;

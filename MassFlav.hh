@@ -1,3 +1,7 @@
+///
+/// \file MassFlav.hh
+///
+/// This file is mainly intended for IRC tests of the IFNPlugin
 #ifndef __FJCONTRIB_MASSFLAV_HH__
 #define __FJCONTRIB_MASSFLAV_HH__
 

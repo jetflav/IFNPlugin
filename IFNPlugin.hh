@@ -43,7 +43,7 @@ public:
       _measure_in(FlavNeutraliser::general), 
       _use_mass_flav(use_mass_flav),
       _spherical_algo(_jet_def.is_spherical()),
-       _pp(-1000000.0), // dummy value
+       _pp(1), // dummy value
       _recursive(true) 
         {
         if (flav_summation == FlavRecombiner::any_abs) {
@@ -125,8 +125,17 @@ public:
  bool is_spherical() const FASTJET_OVERRIDE {return _spherical_algo;}
 
 private:
+  /// the base jet definition
   JetDefinition _jet_def;
-  double _p,_q,_a;
+
+  /// the general form of the uij distance measure is max(pti^2, ptj^2)^p min(pti^2, ptj^2)^q Omega_ij
+  double _p;
+  double _q;
+
+  /// the internal variable that stores what is known as omega in the paper
+  double _a;
+
+  // whether modulo 2 should be used
   bool _modulo_2;
   FlavNeutraliser::measure _measure_in;
   bool _use_mass_flav;
@@ -135,10 +144,11 @@ private:
   bool _recursive;
 };
 
-} // namespace contrib
-
 // a typedef for backward compatibility
 typedef IFNPlugin FlavNeutraliserPlugin;
+
+} // namespace contrib
+
 
 FASTJET_END_NAMESPACE
 

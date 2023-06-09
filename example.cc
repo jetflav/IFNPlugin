@@ -2,6 +2,9 @@
 //
 //   ./example < events/pythia8_Zq_vshort.dat
 //
+// NB: the example file reads in a file with 6 light flavours, and
+//     an extra high density of quarks, to help with "make check"
+//     test things more thoroughly
 //----------------------------------------------------------------------
 // $Id$
 //
@@ -26,10 +29,9 @@
 //----------------------------------------------------------------------
 
 #include <iostream>
-#include <sstream>
+#include <iomanip>
 
 #include "fastjet/PseudoJet.hh"
-#include <sstream>
 #include "IFNPlugin.hh" // In external code, this may become fastjet/contrib/IFNPlugin.hh
 
 using namespace std;
@@ -40,21 +42,90 @@ using namespace fastjet::contrib;
 void read_event(vector<PseudoJet> &event);
 
 //----------------------------------------------------------------------
-int main(){
+int main(int iargc, char **argv){
 
-  // set up the IFNPlugin
+  // give user control over printout (e.g. )
+  unsigned int nevmax = 2;
+  unsigned int njetmax = 1;
+  if (iargc > 1) nevmax  = stoi(argv[1]);
+  if (iargc > 2) njetmax = stoi(argv[2]);
 
+  // print banner for FastJet at the start, so it doesn't mix
+  // into the other outpu
+  ClusterSequence::print_banner(); 
+
+  // we start with a base jet definition
+  JetDefinition base_jet_def(antikt_algorithm, 0.4);
+  // enable it to track flavours (default is net flavour)
+  FlavRecombiner flav_recombiner;
+  base_jet_def.set_recombiner(&flav_recombiner);
+
+  // And then we set up the IFNPlugin that builds on the base_jet_def
+  // The main free parameter, alpha, in the uij distance, 
+  //   uij = max(pt_i, pt_j)^alpha min(pt_i, pt_j)^(2-alpha) Omega_ij
+  double alpha = 2.0;
+
+  // The parameter that sets the nature of the Omega rapidity term;
+  // only change the default of 3-alpha if you are sure you know what you are doing
+  double omega = 3.0 - alpha;
+
+  // The flavour summation scheme; should be one of 
+  //   - FlavRecombiner::net
+  //   - FlavRecombiner::modulo_2
+  FlavRecombiner::FlavSummation flav_summation = FlavRecombiner::net;
+
+  // then construct the IFNPlugin jet definition
+  auto ifn_plugin = new IFNPlugin(base_jet_def, alpha, omega, flav_summation);
+  JetDefinition IFN_jet_def(ifn_plugin);
+  IFN_jet_def.delete_plugin_when_unused();
+
+  cout << "base jet definition: " << base_jet_def.description() << endl;
+  cout << "IFN jet definition:  " << IFN_jet_def.description() << endl;
+
+  // loop over some number of events
   int n_events = 10;
-  for (int iev = 0; iev < n_events; iev++) {
-    //----------------------------------------------------------
+  for (int iev = 0; iev < n_events && iev < nevmax; iev++) {
+
     // read in input particles: see that routine for info 
     // on how to set up the PseudoJets with flavour information
     vector<PseudoJet> event;
     read_event(event);
-    cout << "# read an event with " << event.size() << " particles" << endl;
+    cout << "\n#---------------------------------------------------------------\n";
+    cout << "# read event " << iev << " with " << event.size() << " particles" << endl;
 
-    //----------------------------------------------------------
-    // illustrate how this IFNPlugin contrib works
+    // run the jet clustering with the base jet definition and the
+    // IFNPlugin-based jet definition
+    vector<PseudoJet> base_jets = base_jet_def(event);
+    vector<PseudoJet> IFN_jets  = IFN_jet_def(event);
+
+    // make sure the sizes are the same
+    assert(base_jets.size() == IFN_jets.size());
+
+    // ----------------------------------------------------
+    // loop over the two leading jets and print out their properties
+    for (unsigned int ijet = 0; ijet < base_jets.size() && ijet < njetmax; ijet++) {
+      // first print out the original anti-kt jets and the IFN jets
+      const auto & base_jet = base_jets[ijet];
+      const auto & IFN_jet  = IFN_jets [ijet];
+      cout << endl;
+      cout << "base jet " << ijet << ": ";
+      cout << "pt=" << base_jet.pt() << " rap=" << base_jet.rap() << " phi=" << base_jet.phi();
+      cout << ", flav = " << FlavHistory::current_flavour_of(base_jet).description() << endl;
+      cout << "IFN jet  " << ijet << ": ";
+      cout << "pt=" << IFN_jet.pt() << " rap=" << IFN_jet.rap() << " phi=" << IFN_jet.phi();
+      cout << ", flav = " << FlavHistory::current_flavour_of(IFN_jet).description() << endl;
+      
+      //FlavHistory::current_flavour_of(IFN_jet).description() << endl;
+
+      // for the first event, print out the jet constituents' pt and initial and final flavours
+      cout << "constituents:" << endl;
+      for (const auto & c: sorted_by_pt(IFN_jet.constituents())) {
+        cout << "  pt = " << setw(10) << c.pt();
+        cout << ", orig. flav = " << setw(8) << FlavHistory::initial_flavour_of(c).description();
+        cout << ", final flav = " << setw(8) << FlavHistory::current_flavour_of(c).description();          
+        cout << endl;
+      }
+    }
 
   }
 
