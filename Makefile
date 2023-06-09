@@ -3,9 +3,11 @@
 FASTJETCONFIG=fastjet-config
 PREFIX=`$(FASTJETCONFIG) --prefix`
 CXX=g++
-CXXFLAGS= -O3 -Wall -g -std=c++11
-install_script = $(SHELL) ../utils/install-sh
-check_script = ../utils/check.sh
+CXXFLAGS= -O3 -Wall -g -fPIC -DPIC -std=c++11
+# as compared to fjcontrib, these two scripts are to be found locally
+# change this if we integrate with fjcontrib
+install_script = $(SHELL) ./utils/install-sh
+check_script = ./utils/check.sh
 
 # global contrib-wide Makefile include may override some of the above
 # variables (leading "-" means don't give an error if you can't find

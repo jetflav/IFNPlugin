@@ -1,11 +1,12 @@
 // To run this example, use the following command:
 //
-//   ./example < THE_INPUT_FILE [replace this with the file you want used!]
+//   ./example < events/pythia8_Zq_vshort.dat
 //
 //----------------------------------------------------------------------
 // $Id$
 //
-// Copyright (c) -, 
+// Copyright (c) 2023, Fabrizio Caola, Radoslaw Grabarczyk, 
+// Maxwell Hutt, Gavin P. Salam, Ludovic Scyboz, and Jesse Thaler
 //
 //----------------------------------------------------------------------
 // This file is part of FastJet contrib.
@@ -29,10 +30,11 @@
 
 #include "fastjet/PseudoJet.hh"
 #include <sstream>
-#include "FlavNeutraliserPlugin.hh" // In external code, this should be fastjet/contrib/FlavNeutraliserPlugin.hh
+#include "FlavNeutraliserPlugin.hh" // In external code, this may become fastjet/contrib/FlavNeutraliserPlugin.hh
 
 using namespace std;
 using namespace fastjet;
+using namespace fastjet::contrib;
 
 // forward declaration to make things clearer
 void read_event(vector<PseudoJet> &event);
@@ -40,32 +42,50 @@ void read_event(vector<PseudoJet> &event);
 //----------------------------------------------------------------------
 int main(){
 
-  //----------------------------------------------------------
-  // read in input particles
-  vector<PseudoJet> event;
-  read_event(event);
-  cout << "# read an event with " << event.size() << " particles" << endl;
+  // set up the IFNPlugin
 
-  //----------------------------------------------------------
-  // illustrate how this FlavNeutraliserPlugin contrib works
+  int n_events = 10;
+  for (int iev = 0; iev < n_events; iev++) {
+    //----------------------------------------------------------
+    // read in input particles: see that routine for info 
+    // on how to set up the PseudoJets with flavour information
+    vector<PseudoJet> event;
+    read_event(event);
+    cout << "# read an event with " << event.size() << " particles" << endl;
+
+    //----------------------------------------------------------
+    // illustrate how this FlavNeutraliserPlugin contrib works
+
+  }
 
   return 0;
 }
 
-// read in input particles
+// read in input particles and set up PseudoJets with flavour information
 void read_event(vector<PseudoJet> &event){  
-  string line;
-  while (getline(cin, line)) {
-    istringstream linestream(line);
-    // take substrings to avoid problems when there is extra "pollution"
-    // characters (e.g. line-feed).
-    if (line.substr(0,4) == "#END") {return;}
-    if (line.substr(0,1) == "#") {continue;}
-    double px,py,pz,E;
-    linestream >> px >> py >> pz >> E;
-    PseudoJet particle(px,py,pz,E);
+    // read in the input particles and their PDG IDs
+    string line;
+    double px, py, pz, E;
+    int    pdg_id;
+    event.resize(0);
+    while(getline(cin,line)) {
+      if(line[0] == '#') continue;
 
-    // push event onto back of full_event vector
-    event.push_back(particle);
-  }
+      istringstream iss(line);
+      iss >> px >> py >> pz >> E >> pdg_id;
+      // create a fastjet::PseudoJet with these components and put it onto
+      // back of the input_particles vector
+      PseudoJet p(px,py,pz,E);
+
+      // assign information about flavour (will be deleted automatically)
+      // COMMENT: we probably want to introduce a FlavHistory constructor 
+      // that takes just a PDG ID. 
+      p.set_user_info(new FlavHistory(FlavInfo(pdg_id)));
+      event.push_back(p);
+
+      if (cin.peek() == '\n' || cin.peek() == EOF) {
+        getline(cin,line);
+        break;
+      }
+    }
 }
