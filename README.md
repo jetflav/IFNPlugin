@@ -30,7 +30,8 @@ generates a clustering sequence that is kinematically equivalent to that
 base algorithm. At each clustering step, the algorithm checks whether it
 needs to perform flavour "neutralisation" of the particles involved in
 the clustering. The neutralisation can occur with other particles in the
-event, not involved in the kinematic clustering.
+event, not involved in the kinematic clustering. The intention is that
+the flavours of the final jets should be infrared and collinear safe.
 
 
 Code Structure
@@ -61,4 +62,13 @@ JetDefinition base_jet_def(antikt_algorithm, R);
 double alpha = 2.0;
 JetDefinition jet_def(new IFNPlugin(base_jet_def, alpha));
 jet_def.delete_plugin_when_unused();
+```
+
+The plugin can be used as standard with the FastJet package, e.g.:
+```cpp
+auto jets = jet_def(particles);
+for (const auto & jet : jets) {
+  cout << "jet pt = " << jet.pt() 
+       << ", flav = " << FlavHistory::current_flavour_of(jet) << endl;
+}
 ```
