@@ -30,9 +30,7 @@ generates a clustering sequence that is kinematically equivalent to that
 base algorithm. At each clustering step, the algorithm checks whether it
 needs to perform flavour "neutralisation" of the particles involved in
 the clustering. The neutralisation can occur with other particles in the
-event, not involved in the kinematic clustering. The intention is that
-the flavours of the final jets should be infrared and collinear safe.
-
+event, not involved in the kinematic clustering. 
 
 Code Structure
 --------------
@@ -41,9 +39,10 @@ Various flavour-related utilities are to be found in [`FlavInfo.hh`](FlavInfo.hh
 ```cpp
 // given a particle assign a pdg_id to it, either via a FlavInfo 
 // (stores a static flavour)
+PseudoJet particle = ...;
 particle.set_user_info(new FlavInfo(pdg_id));
-// or a FlavHistory (can track the evolution of the flavour)
-particle.set_user_info(new FlavHistory(pdg_id));
+// or via a FlavHistory (can track the evolution of the flavour)
+// particle.set_user_info(new FlavHistory(pdg_id));
 
 // Retrieve the amount of flavour of a given kind, e.g. amount of b-flavour
 // (example given for a particle with a FlavHistory)
@@ -66,6 +65,8 @@ jet_def.delete_plugin_when_unused();
 
 The plugin can be used as standard with the FastJet package, e.g.:
 ```cpp
+vector<PseudoJet> particles;
+// ... fill the particles ...
 auto jets = jet_def(particles);
 for (const auto & jet : jets) {
   cout << "jet pt = " << jet.pt() 
