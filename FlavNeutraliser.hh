@@ -74,8 +74,6 @@ public:
   /// neutralisation (i.e. with the neutralise function).
   std::vector<PseudoJet> inclusive_jets(ClusterSequence &cs,
                                    const double ptmin = 0.0) const {
-    // Copied from Radek from now
-    // LS: produces memory errors of the type "Invalid read of size ..."
     const std::vector<ClusterSequence::history_element> & hist = cs.history();
     std::vector<PseudoJet> jets = neutralise(cs);
     std::vector<PseudoJet> jets_local;
