@@ -324,7 +324,7 @@ public:
     if (p.has_user_info<FlavInfo>()) {
       flav = p.user_info<FlavInfo>();
     } else if (p.has_user_info<FlavHistory>()) {
-      /// GPS WARNING: not sure this is right -- depends very much on context
+      /// WARNING: not sure this is right -- depends very much on context
       /// (e.g. whether reclustering another algorithm's constituents, or clustering
       /// the flavoured jets that have come out of another algorithm)
       flav = p.user_info<FlavHistory>().initial_flavour();
@@ -345,7 +345,7 @@ public:
     // Recombine using the default recombiner
     DefaultRecombiner::recombine(pa, pb, pab);
 
-    // GPS: put this condition early on
+    // put this condition early on
     assert(!pab.has_user_info<FlavHistory>());
 
     // Then, check if the resulting pseudojet is actually flavourless
@@ -355,7 +355,7 @@ public:
     // make the flavour consistent with the summation choice
     apply_summation_choice(flav);
 
-    /// GPS why don't we just do the following?
+    /// why don't we just do the following?
     pab.set_user_info(new FlavHistory(flav,pab.cluster_hist_index()));
 
   }

@@ -88,7 +88,7 @@ double FlavNeutraliser::neutralisation_distance(
 
   } else {
     assert(_pp==1);
-    // GPS suggestion; first calculate the ratio of squared pts
+    // suggestion; first calculate the ratio of squared pts
     // (this avoids square roots -- hopefully should not
     // trigger under/overflow)
     double p1t2 = p1.pt2();
@@ -102,7 +102,7 @@ double FlavNeutraliser::neutralisation_distance(
     double deltaR2 = drap*drap + dphi*dphi;
 
     switch (_measure) {  
-      // GPS: then rather than using pow(p1.delta_R(p2),2), we could use
+      // then rather than using pow(p1.delta_R(p2),2), we could use
       // delta_R2=p1.squared_distance(p2). The other thing I would do,
       // especially for our "default" choice is to switch over to the 
       // delta_R2 in the small angle limit, cf. below
@@ -316,7 +316,7 @@ std::vector<PseudoJet> FlavNeutraliser::neutralise(ClusterSequence & cs) const {
       : [](const PseudoJet & j) {return  j.pt();};
 
 
-  // GPS games: NOTE -- pp ref scale should evolve to become something
+  // NOTE -- pp ref scale should evolve to become something
   // less sensitive to UE & pileup, but for now take something simple
   // It is used only for the aktlike_pair_refratio option
   double ref_scale = 0;
@@ -390,7 +390,7 @@ std::vector<PseudoJet> FlavNeutraliser::neutralise(ClusterSequence & cs) const {
     // the current jet i getting recombined, and put them in a list K
     std::vector<std::pair<PseudoJet*, double>> flavour_candidates;
 
-    // GPS note: this loop is not especially efficient -- it may be
+    // note: this loop is not especially efficient -- it may be
     // worth exploring some kind of dynamically maintained list of 
     // flavoured objects (on the other hand the loop probbaly isn't
     // used all that often)
@@ -548,7 +548,7 @@ void FlavNeutraliser::use_neutralisation_candidates(
 ///  A slightly non-trivial question is the set of particles over which
 ///  we do the search for 3's potential neutralisation partners. Should
 ///  it be all flavoured particles, including 0? How do we organise the
-///  corresponding information? The conclusion GPS came to on 2022-05-29
+///  corresponding information? The conclusion on 2022-05-29
 ///  is that 
 ///
 ///  - when we examine neutralisation candidates for 1, we should

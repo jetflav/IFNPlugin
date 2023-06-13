@@ -80,7 +80,7 @@ namespace contrib{
       int n_small_rap = int(pa_small_rap ) + int(pb_small_rap) + int(pab_small_rap);
       // at least two of the above at small rapidity: revert to 4-vector sum
       if (n_small_rap >= 2) {
-        // GPS: open question as to what we do about the mass here...
+        // open question as to what we do about the mass here...
         // (i.e. we could try to make it more accurate, but will not for now)
         FlavRecombiner::recombine(pa, pb, pab);
         pab.set_user_info(new MassFlavHistory(pab.user_info<FlavHistory>(),

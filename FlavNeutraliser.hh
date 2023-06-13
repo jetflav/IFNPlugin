@@ -151,7 +151,7 @@ public:
 
 private:
   /// the value of deltaR2 below which we replace 2*(cosh-cos) with
-  /// (GPS addition as of 2021-09-26, but not yet being used)
+  /// (addition as of 2021-09-26, but not yet being used)
   double _p, _q, _a;
   static const double _deltaR2_handover;
   bool    _modulo_2;
