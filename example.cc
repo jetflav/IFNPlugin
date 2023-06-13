@@ -1,6 +1,6 @@
 // To run this example, use the following command:
 //
-//   ./example < events/pythia8_Zq_vshort.dat
+//   ./example < data/pythia8_Zq_vshort.dat
 //
 // NB: the example file reads in a file with 6 light flavours, and
 //     an extra high density of quarks, to help with "make check"
