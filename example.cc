@@ -44,17 +44,19 @@ void read_event(vector<PseudoJet> &event);
 //----------------------------------------------------------------------
 int main(int iargc, char **argv){
 
-  // give user control over printout (e.g. )
+  // give user control over printout (mainly relevant for make check)
+  // usage: "./example [nevmax [njetmax]] < data/pythia8_Zq_vshort.dat"
   unsigned int nevmax = 2;
   unsigned int njetmax = 1;
   if (iargc > 1) nevmax  = stoi(argv[1]);
   if (iargc > 2) njetmax = stoi(argv[2]);
 
   // print banner for FastJet at the start, so it doesn't mix
-  // into the other outpu
+  // into the other output
   ClusterSequence::print_banner(); 
 
-  // we start with a base jet definition
+  // we start with a base jet definition (should be either
+  // antikt_algorithm or cambridge_algorithm, or their e+e- variants)
   JetDefinition base_jet_def(antikt_algorithm, 0.4);
   // enable it to track flavours (default is net flavour)
   FlavRecombiner flav_recombiner;
@@ -115,8 +117,6 @@ int main(int iargc, char **argv){
       cout << "pt=" << IFN_jet.pt() << " rap=" << IFN_jet.rap() << " phi=" << IFN_jet.phi();
       cout << ", flav = " << FlavHistory::current_flavour_of(IFN_jet).description() << endl;
       
-      //FlavHistory::current_flavour_of(IFN_jet).description() << endl;
-
       // for the first event, print out the jet constituents' pt and initial and final flavours
       cout << "constituents:" << endl;
       for (const auto & c: sorted_by_pt(IFN_jet.constituents())) {
@@ -149,9 +149,7 @@ void read_event(vector<PseudoJet> &event){
       PseudoJet p(px,py,pz,E);
 
       // assign information about flavour (will be deleted automatically)
-      // COMMENT: we probably want to introduce a FlavHistory constructor 
-      // that takes just a PDG ID. 
-      p.set_user_info(new FlavHistory(FlavInfo(pdg_id)));
+      p.set_user_info(new FlavHistory(pdg_id));
       event.push_back(p);
 
       if (cin.peek() == '\n' || cin.peek() == EOF) {
