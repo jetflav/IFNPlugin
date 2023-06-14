@@ -11,7 +11,7 @@ flavour-neutralisation (IFN) algorithm from
 The code is structured following the pattern of a FastJet contrib (but
 not yet included in fjcontrib).
 
-  ! The IFNPlugin code needs FastJet >= 3.4.1 to compile !
+**The IFNPlugin code needs FastJet ≥ 3.4.1 to compile**
 
 You will need `fastjet-config` to be in your path (otherwise edit the
 Makefile), and then you can 

@@ -5,6 +5,13 @@
 #include "fastjet/ClusterSequence.hh"
 #endif
 
+
+#ifdef FASTJET_VERSION_NUMBER
+#if FASTJET_VERSION_NUMBER < 30401
+#error "IFNPlugin requires FastJet version 3.4.1 or higher"
+#endif
+#endif
+
 // for releases, this is commented out, though we might
 // still need it for tests.
 //#include "PseudoJetIO.hh"
