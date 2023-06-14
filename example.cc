@@ -126,7 +126,6 @@ int main(int iargc, char **argv){
         cout << endl;
       }
     }
-
   }
 
   return 0;
