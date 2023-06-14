@@ -6,7 +6,7 @@ flavour-neutralisation (IFN) algorithm from
 
 > Flavoured jets with exact anti-kt kinematics and tests of infrared and collinear safety,
 > by Fabrizio Caola, Radoslaw Grabarczyk, Maxwell Hutt, Gavin P. Salam, Ludovic Scyboz, and Jesse Thaler
-> https://arxiv.org/abs/2023.NNNNN
+> https://arxiv.org/abs/2306.07314
 
 The code is structured following the pattern of a FastJet contrib (but
 not yet included in fjcontrib).
