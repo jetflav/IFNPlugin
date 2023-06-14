@@ -1,3 +1,6 @@
+// Copyright (c) 2023, Fabrizio Caola, Radoslaw Grabarczyk,
+// Maxwell Hutt, Gavin P. Salam, Ludovic Scyboz, and Jesse Thaler
+
 #include "FlavInfo.hh"
 #include <sstream>
 
