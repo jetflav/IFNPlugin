@@ -18,7 +18,7 @@ Makefile), and then you can
 
 - build the library: `make -j`
 - build the example: `make -j example`
-- run the example: `./example < events/pythia8_Zq_vshort.dat`
+- run the example: `./example < data/pythia8_Zq_vshort.dat`
 - check the output is correct: `make -j check`
 
 To learn how to use the library, the [`example.cc`](example.cc) code is
