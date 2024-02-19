@@ -1,5 +1,7 @@
 2024/02/XX: release of version 1.0.1
 - added checks about consistency of modulo_2 requests between base jet definition 
   and IFNPlugin.
+- made FlavInfo::flavour_of and FlavHistory::current/initial_flavour_of
+  a bit more robust against inputs with the wrong one of FlavInfo v. FlavHistory. 
 
 2023/06/15: release of version 1.0.0-alpha1

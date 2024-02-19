@@ -115,10 +115,11 @@ public:
 
   /// returns the flavour of a particle if that particle has flavour, otherwise
   /// just the default flavour
-  static const FlavInfo & flavour_of(const PseudoJet & particle) {
-    if (particle.has_user_info<FlavInfo>()) return particle.user_info<FlavInfo>();
-    else                                    return _no_flav;
-  }
+  static const FlavInfo & flavour_of(const PseudoJet & particle);
+  // {
+  //  if (particle.has_user_info<FlavInfo>()) return particle.user_info<FlavInfo>();
+  //  else                                    return _no_flav;
+  //}
 
   /// value of flag to indicate that the particle is an incoming beam particle
   static const int beam = 2;
@@ -203,36 +204,16 @@ public:
   /// Return the flavour history vector
   const std::vector<std::pair<int, FlavInfo>> & history() const {return _flavour_history;}
 
-  /// Return the current (final) flavour element of the history of a PseudoJet
-  static const FlavInfo & current_flavour_of(const PseudoJet & particle) {
-    if (particle.has_user_info<FlavHistory>()) {
-      return particle.user_info<FlavHistory>().history().back().second;
-    } else {
-      throw fastjet::Error("A particle without FlavHistory was searched for FlavHistory.");
-    }
-  }
+  /// Return the current (final) flavour element of the history of a PseudoJet.
+  /// For particles with just a FlavInfo, it returns that. 
+  static const FlavInfo & current_flavour_of(const PseudoJet & particle);
 
   /// Return the final history step of the history of a PseudoJet
-  static const int current_index_of(const PseudoJet &particle) {
-    if (particle.has_user_info<FlavHistory>()) {
-      int current_index =
-          particle.user_info<FlavHistory>().history().back().first;
-      return current_index;
-    } else {
-      throw fastjet::Error(
-          "A particle without FlavHistory was searched for FlavHistory.");
-    }
-  }
+  static const int current_index_of(const PseudoJet &particle);
 
   /// Return the first flavour element of the history of a PseudoJet
-  static const FlavInfo & initial_flavour_of(const PseudoJet &jet) {
-    if (jet.has_user_info<FlavHistory>()) {
-      return jet.user_info<FlavHistory>().history()[0].second;
-    } else {
-      throw fastjet::Error(
-          "A particle without FlavHistory was searched for FlavHistory.");
-    }
-  }
+  /// For particles with just a FlavInfo, it returns just that. 
+  static const FlavInfo & initial_flavour_of(const PseudoJet &jet);
 
   /// Return the first history step of the history of a PseudoJet
   static const int initial_index_of(const PseudoJet &jet) {

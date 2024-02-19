@@ -1,3 +1,15 @@
+2024-02-19 Gavin 
+
+	* FlavInfo.hh:
+	* FlavInfo.cc:
+
+	Updated FlavInfo::flavour_of so that it throws an error on objects with
+	a FlavHistory, rather than returning a flavourless FlavInfo. This mitigates
+	certain user bugs
+
+	Also updated FlavHistory::current_flavour_of and initial_flavour_of, so that they 
+	no longer throw an error on jets with a FlavInfo, but instead return that FlavInfo.
+
 2024-02-19 Gavin + Ludo
 
 	* FlavInfo.hh:
@@ -16,7 +28,7 @@
 
 	* NEWS:
 	* VERSION: 
-	updated for 1.0.1 release
+	updated in anticipation of 1.0.1 release
 
 
 

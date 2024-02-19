@@ -202,6 +202,44 @@ string FlavInfo::description() const {
   return result.str();
 }
 
+
+/// returns the flavour of a particle if that particle has flavour, otherwise
+/// just the default flavour
+const FlavInfo & FlavInfo::flavour_of(const PseudoJet & particle) {
+  if (particle.has_user_info<FlavInfo>()) {
+    return particle.user_info<FlavInfo>();
+  } else if (particle.has_user_info<FlavHistory>()) {
+    throw Error("FlavInfo::flavour_of called on particle with FlavHistory. "
+                "Use FlavHistory::current_flavour_of(...) or "
+                "FlavHistory::initial_flavour_of(...) instead");
+  } else {
+    return _no_flav;
+  }
+}
+
+/// Return the current (final) flavour element of the history of a PseudoJet
+const FlavInfo & FlavHistory::current_flavour_of(const PseudoJet & particle) {
+  if (particle.has_user_info<FlavHistory>()) {
+    return particle.user_info<FlavHistory>().history().back().second;
+  } else if (particle.has_user_info<FlavInfo>()) {
+    return particle.user_info<FlavInfo>();
+  } else {
+    throw fastjet::Error("A particle without FlavHistory was searched for FlavHistory.");
+  }
+}
+
+/// Return the first flavour element of the history of a PseudoJet
+const FlavInfo & FlavHistory::initial_flavour_of(const PseudoJet &jet) {
+  if (jet.has_user_info<FlavHistory>()) {
+    return jet.user_info<FlavHistory>().history()[0].second;
+  } else if (jet.has_user_info<FlavInfo>()) {
+    return jet.user_info<FlavInfo>();
+  } else {
+    throw fastjet::Error(
+        "A particle without FlavHistory was searched for FlavHistory.");
+  }
+}
+
 //----------------------------------------------------------------------
 } // namespace contrib
 FASTJET_END_NAMESPACE
