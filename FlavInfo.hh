@@ -316,10 +316,13 @@ public:
   };
 
   /// Constructor
-  FlavRecombiner(FlavSummation flav_summation = net) : 
-         DefaultRecombiner(), _flav_summation(flav_summation) {
+  FlavRecombiner(FlavSummation flav_summation_in = net) : 
+         DefaultRecombiner(), _flav_summation(flav_summation_in) {
     //assert(flav_summation == net && "handling of non-net flavour summation inside FlavRecombiner is still to come");
   }
+
+  /// return the flavour summation choice
+  FlavSummation flav_summation() const {return _flav_summation;}
 
   void preprocess(PseudoJet & p) const FASTJET_OVERRIDE {
 

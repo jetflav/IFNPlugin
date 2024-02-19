@@ -1,0 +1,5 @@
+2024/02/XX: release of version 1.0.1
+- added checks about consistency of modulo_2 requests between base jet definition 
+  and IFNPlugin.
+
+2023/06/15: release of version 1.0.0-alpha1

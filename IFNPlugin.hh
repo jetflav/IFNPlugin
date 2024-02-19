@@ -44,11 +44,11 @@ public:
       _use_mass_flav(use_mass_flav),
       _spherical_algo(_jet_def.is_spherical()),
        _pp(1), // dummy value
-      _recursive(true) 
-        {
+      _recursive(true) {
         if (flav_summation == FlavRecombiner::any_abs) {
           throw Error("IFNPlugin: FlavRecombiner::any_abs is not supported");
-        }
+          }
+          check_mod2_consistency();
       }
 
  /// Old main constructor for the class
@@ -72,8 +72,10 @@ public:
        _use_mass_flav(use_mass_flav),
        _spherical_algo(_jet_def.is_spherical()),
        _pp(pp),
-       _recursive(recursive_neutralisation)
-        {}
+       _recursive(recursive_neutralisation) {check_mod2_consistency();}
+         
+
+
  /// Alternative constructor for the class that allows
  /// defining the neutraliser measure with general p, q and a
  /// according to
@@ -104,7 +106,7 @@ public:
        _spherical_algo(_jet_def.is_spherical()),
        _pp(pp),
        _recursive(recursive_neutralisation)
-        {}
+        {check_mod2_consistency();}
 
  typedef FlavNeutraliser::measure Measure;
 
@@ -125,6 +127,11 @@ public:
  bool is_spherical() const FASTJET_OVERRIDE {return _spherical_algo;}
 
 private:
+
+  /// checks that the mod2 setting is consistent with the base
+  /// algorithm's flavour recombiner, if it has one
+  void check_mod2_consistency() const;
+
   /// the base jet definition
   JetDefinition _jet_def;
 

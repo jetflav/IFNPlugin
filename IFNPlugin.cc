@@ -75,12 +75,32 @@ string IFNPlugin::description () const {
           desc << "UNRECOGNISED";
     }
   }
+  desc << ", with modulo_2 = " << _modulo_2;
   desc << " and recursive = " << recursive();
   return desc.str();
 }
 
-//---------------------------------------------------------------
+void IFNPlugin::check_mod2_consistency() const {
 
+  // a check that modulo 2 expectations are consistent with the flavour algorithm
+  const auto * flav_recombiner = dynamic_cast<const FlavRecombiner*>(_jet_def.recombiner());
+  if (flav_recombiner)  {
+    if (_modulo_2) {
+      if (flav_recombiner->flav_summation() != FlavRecombiner::modulo_2) throw Error(
+                    "IFNPlugin modulo_2 is set to true, but base jet "
+                    "definition (" + _jet_def.description() + 
+                    ") has a FlavRecombiner with flav_summation != modulo_2");
+    } else {
+      if (flav_recombiner->flav_summation() != FlavRecombiner::net) throw Error(
+                  "IFNPlugin modulo_2 is set to false, but base jet definition ()"
+                   + _jet_def.description() + 
+                  ") has a FlavRecombiner with flav_summation != net");
+    }
+  }
+
+}
+
+//---------------------------------------------------------------
 void IFNPlugin::run_clustering(ClusterSequence & cs) const {
 
   // take the initial particles from the cs that gets passed to

@@ -1,3 +1,23 @@
-2021-09-24 <gsalam@localhost>
+2024-02-19 Gavin + Ludo
 
-           Initial creation
+	* FlavInfo.hh:
+    added FlavRecombiner::flav_summation() to enquire about the
+    summation scheme that has been chosen. 
+
+	* IFNPlugin.cc:
+	* IFNPlugin.hh:
+
+    added consistency checks between modulo_2 requests in the IFNPlugin
+    constructor versus the base jet definition. Also added modulo_2 info
+    in IFNPlugin description.
+
+	* example.ref:
+	updated it to reflect extra info in IFNPlugin description
+
+	* NEWS:
+	* VERSION: 
+	updated for 1.0.1 release
+
+
+
+

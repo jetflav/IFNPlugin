@@ -1,5 +1,5 @@
 #--------------------------------------------------------------------------
-#                         FastJet release 3.4.1-devel
+#                         FastJet release 3.4.2
 #                 M. Cacciari, G.P. Salam and G. Soyez                  
 #     A software package for jet finding and analysis at colliders      
 #                           http://fastjet.fr                           
@@ -12,7 +12,7 @@
 # and 3rd party plugin jet algorithms. See COPYING file for details.
 #--------------------------------------------------------------------------
 base jet definition: Longitudinally invariant anti-kt algorithm with R = 0.4 and E scheme recombination and net_flav flavour recombination 
-IFN jet definition:  Interleaved Flavour Neutralisation (IFN) plugin based on Longitudinally invariant anti-kt algorithm with R = 0.4 and E scheme recombination and net_flav flavour recombination , using a standard uij  neutralisation measure with alpha = 2, omega = 1 and recursive = 1
+IFN jet definition:  Interleaved Flavour Neutralisation (IFN) plugin based on Longitudinally invariant anti-kt algorithm with R = 0.4 and E scheme recombination and net_flav flavour recombination , using a standard uij  neutralisation measure with alpha = 2, omega = 1, with modulo_2 = 0 and recursive = 1
 
 #---------------------------------------------------------------
 # read event 0 with 64 particles
