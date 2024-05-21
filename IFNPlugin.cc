@@ -30,6 +30,10 @@ string IFNPlugin::description () const {
   if (_spherical_algo) {
     desc << ", using a spherical neutralisation measure of type ";
     switch (_measure_in) {
+        case FlavNeutraliser::general:
+          if (_p+_q == 1.0) desc << "standard uij, with alpha = " << 2*_p;
+          else              desc << "general case with p = " << _p << " q = " << _q; 
+          break;
       case FlavNeutraliser::jade:
           desc << "jade"; break;
       case FlavNeutraliser::maxscale:
@@ -37,9 +41,10 @@ string IFNPlugin::description () const {
       case FlavNeutraliser::aktlike_pair_refratio:
           desc << "aktlike_pair_refratio"; break;
       default:
-          desc << "default"; break;
+          desc << "[deprecated, index=" << _measure_in<<"]"; 
+          desc << ", with pp = " << _pp;
+          break;
     }
-    desc << ", with pp = " << _pp;
   } else {
     desc << ", using a ";
     string nm = " neutralisation measure";

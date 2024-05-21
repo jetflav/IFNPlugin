@@ -17,6 +17,10 @@ using namespace std;
 //#define DEBUG
 
 FASTJET_BEGIN_NAMESPACE      // defined in fastjet/internal/base.hh
+
+LimitedWarning _warn_old_measure(100);
+LimitedWarning _warn_aktlike_measure(100);
+
 namespace contrib{
   
 // Set the scale at which to switch from standard measures (e.g. cosphi_coshy)
@@ -66,6 +70,7 @@ double FlavNeutraliser::neutralisation_distance(
 
     double u;
     if (_measure == aktlike_pair_refratio) {
+      _warn_aktlike_measure.warn("FlavNeutraliser::neutralisation_distance: using aktlike_pair_refratio, which is not validated");
       // default to the anti-kt like measure
       u = 2*one_minus_cos_theta/pow(std::max(p1.E(), p2.E()),2);
       // if both particles are flavoured, multiply by Emax^4/Q^4
@@ -81,6 +86,7 @@ double FlavNeutraliser::neutralisation_distance(
       u = 2 * pow(std::max(p1.E(), p2.E()), 2*_p) * pow(std::min(p1.E(), p2.E()), 2*_q) * one_minus_cos_theta;
     } else {
       // all other options 
+      _warn_old_measure.warn("FlavNeutraliser::neutralisation_distance: using deprecated old ratio measure");
       u = 2 * pow(std::max(p1.E(), p2.E()) / std::min(p1.E(), p2.E()), 2*_pp) 
           * one_minus_cos_theta;
     }
@@ -102,15 +108,19 @@ double FlavNeutraliser::neutralisation_distance(
     double deltaR2 = drap*drap + dphi*dphi;
 
     switch (_measure) {  
-      // then rather than using pow(p1.delta_R(p2),2), we could use
-      // delta_R2=p1.squared_distance(p2). The other thing I would do,
-      // especially for our "default" choice is to switch over to the 
-      // delta_R2 in the small angle limit, cf. below
+      case general:
+        maxpt2p = pow(std::max(p1.pt2(), p2.pt2()),_p);
+        minpt2q = pow(std::min(p1.pt2(), p2.pt2()),_q);
+        if (deltaR2 > _deltaR2_handover) return maxpt2p*minpt2q * 2*((cosh(_a*drap) - 1)/(_a*_a) 
+                                                                    - (cos(dphi) - 1));
+        else                             return maxpt2p*minpt2q * deltaR2;  
 
       case sinh_delta_R:
+        _warn_old_measure.warn("FlavNeutraliser::neutralisation_distance: using deprecated old ratio measure");
         if (deltaR2 > _deltaR2_handover) return pt2ratio * pow(sinh(sqrt(deltaR2)), 2);
         else                             return pt2ratio * deltaR2;
       case delta_R:
+        _warn_old_measure.warn("FlavNeutraliser::neutralisation_distance: using deprecated old ratio measure");
         return pt2ratio * deltaR2;
       case jade_delta_R:
         p1tp2t = sqrt(p1t2*p2t2);
@@ -124,6 +134,7 @@ double FlavNeutraliser::neutralisation_distance(
         if (deltaR2 > _deltaR2_handover) return pt2ratio * (pow(dphi, 2) + 2*(cosh(drap) - 1));
         else                             return pt2ratio * deltaR2;
       case cosphi_coshy:
+        _warn_old_measure.warn("FlavNeutraliser::neutralisation_distance: using deprecated old ratio measure");
         //cout << "accr: " << drap << " " << dphi << " " << new_deltaR2 << "\n";
         // dphi = p1.delta_phi_to(p2);
         // drap = std::abs(p1.rap() - p2.rap());
@@ -134,6 +145,7 @@ double FlavNeutraliser::neutralisation_distance(
         else                             return pt2ratio * deltaR2;
       case aktlike_pair_refratio:
       case aktlike_pair_dynrefratio:
+        _warn_aktlike_measure.warn("FlavNeutraliser::neutralisation_distance: using aktlike_pair_refratio, which is not validated");
         // dphi = p1.delta_phi_to(p2);
         // drap = std::abs(p1.rap() - p2.rap());
         maxpt2 = std::max(p1.pt2(), p2.pt2());
@@ -171,12 +183,6 @@ double FlavNeutraliser::neutralisation_distance(
         if (deltaR2 > _deltaR2_handover) return maxpt2 * 2*(cosh(drap)-cos(dphi));
         else                             return maxpt2 * deltaR2;
 
-      case general:
-        maxpt2p = pow(std::max(p1.pt2(), p2.pt2()),_p);
-        minpt2q = pow(std::min(p1.pt2(), p2.pt2()),_q);
-        if (deltaR2 > _deltaR2_handover) return maxpt2p*minpt2q * 2*((cosh(_a*drap) - 1)/(_a*_a) 
-                                                                    - (cos(dphi) - 1));
-        else                             return maxpt2p*minpt2q * deltaR2;  
       default:
         throw Error("Unrecognised neutralisation measure");
     }

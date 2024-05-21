@@ -51,18 +51,18 @@ public:
           check_mod2_consistency();
       }
 
- /// Old main constructor for the class
+ /// Old main constructor for the class. Intended only for developers.
  ///
  /// \param jet_def: the jet definition on which this plugin will be based
  /// \param modulo_2: if true, flavour should be treated modulo 2
  /// \param measure_in: the distance measure to be used in the neutralisation
  /// \param use_mass_flav: only intended for tests
- /// \param pp: in e+e- alg we use (Emax^2/Emin^2)^pp (default = 1)
+ /// \param pp: in [old, pre-release] e+e- alg we use (Emax^2/Emin^2)^pp
  /// \param recursive_neutralisation: if true (default), use recursive algo
  IFNPlugin(
      JetDefinition jet_def,
-     bool modulo_2 = false,
-     FlavNeutraliser::measure measure_in = FlavNeutraliser::cosphi_coshy,
+     bool modulo_2,
+     FlavNeutraliser::measure measure_in,
      bool use_mass_flav = false,
      double pp = 1,
      bool recursive_neutralisation = true)
